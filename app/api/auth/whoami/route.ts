@@ -3,6 +3,10 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@/lib/supabase'
 
+// Force dynamic rendering — this route reads cookies, can't be prerendered
+// statically. Without this, `next build` fails with "Dynamic server usage".
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/auth/whoami
  *
