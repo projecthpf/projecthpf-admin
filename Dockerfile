@@ -15,11 +15,16 @@ ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 ARG NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 ARG NEXT_PUBLIC_APP_URL
+# Build version tag — pass via --build-arg APP_VERSION=v002 (mirrors the
+# members portal pattern). Becomes process.env.APP_VERSION at runtime
+# so the UI can show which image is actually running.
+ARG APP_VERSION=dev
 
 ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL:-https://placeholder.supabase.co}
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY:-placeholder-anon-key}
 ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-pk_placeholder}
-ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://admin.laceynprice.com}
+ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://admin.projecthpf.org}
+ENV APP_VERSION=${APP_VERSION}
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS="--max-old-space-size=2048"
@@ -42,10 +47,12 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
+ARG APP_VERSION=dev
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+ENV APP_VERSION=${APP_VERSION}
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
